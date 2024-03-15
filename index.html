@@ -105,7 +105,7 @@
 
 </body>
 <script>
-
+    let estado = null
     let carro = document.getElementById("vrumvrum");
     let carro2 = document.getElementById("vrumvrum2");
     let carro3 = document.getElementById("carroparado");
@@ -144,25 +144,6 @@
     let momento = document.getElementById("momento")
 
 
-
-   async function fetchTransito() {
-       try {
-           const response = await fetch("https://niloweb.com.br/transit-room/api/reg_endpoint.php");
-           if (!response.ok) {
-               throw new Error('Não foi possível obter os dados da API.');
-           }
-           const data = await response.json();
-           const status = data[0].res;
-           statusElement.textContent = `No momento está ${status === 'B' ? 'bloqueado' : status === 'L' ? 'liberado' : 'aguardando'}`;
-           atualizarImagens(status);
-       } catch (error) {
-           console.error('Erro ao buscar dados:', error);
-       }
-   }
-
-   setInterval(fetchTransito, 5000);
-   fetchTransito();
-
     fetch("https://niloweb.com.br/transit-room/api/reg_endpoint.php")
         .then(resposta => resposta.json()
             .then(dados1 => {
@@ -175,6 +156,7 @@
                             carroparadocontinuaparado()
                             iniciarAnimacao()
                             carroparadetremer()
+                            playSound()
                         })
                 }
                 else if (dados1[0].res == "L") {
@@ -186,6 +168,7 @@
                             carroparadoanda()
                             pararAnimacao()
                             carroparadetremer()
+                            playSound()
                         })
                 }
                 else {
@@ -196,11 +179,30 @@
                             momento.innerHTML="Esta em espera"
                             pararAnimacao()
                             carrotremendo()
+                            playSound()
                         })
                 }
 
             })
         )
+
+        function playSound() {
+        const audio = new Audio ('brain-aneurysm.mp3')
+                audio.onended = function() {
+            };
+            audio.play();
+        }
+ 
+
+
+        function recarregarPaginaAcadaMinuto() {
+            setInterval(function() {
+                location.reload();
+            }, 10000); // 60000 milissegundos = 1 minuto
+        }
+
+        // Chamar a função para iniciar o recarregamento da página a cada minuto
+        recarregarPaginaAcadaMinuto();
 
     //     let carro = document.querySelector("#vrumvrum");
 
